@@ -101,3 +101,41 @@
 - Slippage: A delay between the time your program transmits an order to your brokerage and the time it is executed at the exchange, most of the times slippages will incur a loss
 - Transaction costs vary widely for different kinds of security, you can typically estimate it by taking half the average bid-ask spread and then adding the commission if your order size is not much bigger than the average sizes of the best bid and offer
     
+#### Does the Data Suffer from Survivorship Bias
+- A historical database of stock prices that does not include stocks that have disappeared due to bankruptcies, delistings, mergers, or acquisitions suffer from the so-called survivorship bias as only "survivors" of unpleasant events remain in the database
+- Backtesting a strategy using data with survivorship bias can be dangerous because it may inflate the historical performance of the strategy
+- This is especially true if the strategy has a "value" bent, that is it tends to buy stocks that are cheap
+- Stocks are usually cheap because the companies were going bankrupt shortly, so if the strategy neglects the cases where stocks got delisted, the backtested performance will be much better than reality
+
+#### How Did Performance of the Strategy Change Over Years
+- Most strategies performed much better 10 years ago than now
+- Survivorship bias in the data might also contribute to the good performance in the early period, as the further back we go the more missing stocks we will have
+- Therefore, when judging the suitability of a strategy, one must pay particular attention to its performance in the recent few years
+- Finally, "regime shifts" (a fundamental change in the underlying structure of a system) in the financial market can mean that financial data from an earlier period simply cannot be fitted to the same model that is applicable today
+
+#### Does the Strategy Suffer from Data-Snooping Bias
+- If you build a trading strategy that has 100 parameters, it is very likely that you can optimize the parameters to make the historical performance look fantastic
+- It is also very likely that the future performance of this strategy will look nothing like its historical performance and will turn out to be very poor
+- By having many parameters, you may fit the model to historical accidents in the past that will not repeat themselves in the future
+- Data-snooping bias is very hard to avoid, even with 1-2 parameters, but in general the more rules the strategy has, the more parameters the model has, and the more likely it is to going to suffer data-snooping bias
+- Simple models are often the ones that will stand the test of time
+
+#### Does the Strategy "Flu under the Radar" of Institutional Money Managers
+- We should not be concerned whether a strategy is one that can absorb multiple millions of dollars (Capacity is the technical term for how much a strategy can absorb without negatively impacting its returns)
+- In fact, you should look for strategies that fly under the radar of intuitions and have very low capacities because they trade too often
+- Those niches are the ones that are likely still to be profitable because they have not yet been completely arbitraged away by gigantic hedge funds
+
+#### Summary
+- Circumstances based on personal criteria
+    - How much time do you have for baby-sitting your trading programs?
+    - How good a programmer are you?
+    - How much capital do you have?
+    - Is your goal to earn steady monthly income or to strive for a large, long-term capital gain?
+- Criteria to quickly filter out unsuitable strategies
+    - Does it outperform a benchmark
+    - Does it have a high enough Sharpe ratio
+    - Does it have a small enough drawdown and short enough draw-down duration
+    - Does the backtest suffer from survivorship bias
+    - Does the strategy lose steam in recent years compared to its earlier years
+    - Does the strategy have its own "niche" that protects it from intense competition from large institutional money managers
+- After making all these quick judgement, the next chapter covers rigorously backtesting strategies to ensure it does as advertised.
