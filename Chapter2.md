@@ -47,9 +47,9 @@
 - Nominal Value: The total value of the underlying asset controlled by a futures contract `Nominal Value = Contract Size * Current Market Price`
 - Futures that have high nominal values and high volatility but low margin requirements still require large amounts of capital to maintain the margin requirements as a few losses may incur a margin call if your capital is insufficient
 
-#### Sharpe Ratio
+### Sharpe Ratio
 - The Sharpe Ratio is a measure used to assess the risk-adjusted return of an investment
-- The Sharpe Ratio is calculated  by `Sharpe Ratio = (Rp - Rf) / σp`
+- The Sharpe Ratio is calculated by `Sharpe Ratio = (Rp - Rf) / σp`
     - Rp is the expected return rate of the portfolio
     - Rf is the risk-free rate of return
     - σp is the standard deviation of the portfolio's returns, representing total risk (volatility)
@@ -62,5 +62,42 @@
     - 3.0 and above: Excellent (very rare)
 - It has been mathematically proven that long-term growth is achieved by finding a strategy with the maximum Sharpe ratio
 
+### Information Ratio
+- The information ratio measures the effectiveness of a long-only strategy
+- It can be calculated by `Information Ratio = Average of Excess Returns / Standard Deviation of Excess Returns`
+    - Excess Returns = Portfolio Returns - Benchmark Returns
+    - The benchmark is usually the market index to which the securities you trade belong to
+- The Sharpe Ratio is actually a special case of the information ratio, suitable when we have a dollar-neutral strategy so that the benchmark to use is always the risk-free rate
 
+### Quick Checks for Sharpe Ratio
+- Sharpe Ratio's are often not reported by the authors of a trading strategy, and you may have to e-mail them in private
+-  Often they will oblige, but if they refuse you have no choice but to perform the backtest yourself
+- You may be able to make an educated guess based on the flimsiest of information:
+    - If a strategy trades only a few times a year, chances are it's Sharpe ratio won't be high
+    - If a strategy has deep drawdowns
+        - Drawdowns: A measure of the decline in the value of an investment 
 
+#### How Deep and Long is the Drawdown?
+- A strategy suffers a drawdown whenever it has lost money recently
+- A drawdown at a given time t is defined as the difference between the current equity value of the portfolio (assuming no redemption or cash infusion) of the portfolio and the global maximum of the equity curve occuring on or before time t
+    - Redemption: The process where an investor sells back their shells (withdrawing invested capital)
+    - Cash Infusion: The injection of additional capital funds
+- Maximum drawdown: The difference between the global maximum with the global minimum (the maximum must occur before the global minimum)
+    - The global maximum is called the "high watermark"
+- The maximum drawdown duration is the longest it has taken for the equity curve to recover losses
+- Drawdowns are usually measured in percentage terms, with the denominator being the equity at the high watermark and the numerator being the loss of equity since reaching the high watermark
+- The maximum drawdown and the maximum drawdown period do not typically overlap over the same period
+
+#### How will Transaction Costs Affect the Strategy?
+- Every time a strategy buys and sells a security, it incurs a transaction cost
+- The more frequent it trades, the larger the impact of transaction costs will be on profitability
+- If you buy and sell securities using limit orders, you avoid liquidity costs but incur opportunity costs (as the order may not execute at all)
+    - For example, if the current bid price is $49.90 but the ask price is $50.10, the bid ask spread is $0.20, if you place a market buy order you will buy at $50.10, but if you place a sell order you will sell at $49.90
+    - Limit orders: An order to buy or sell a security at a specified price or better
+    - Liquidity cost: When you place a market order, you agree to buy or sell at the current market price, this may result in higher costs due to the bid-ask spread
+    - Opportunity cost: If the limit does not execute, it may cause you to miss out on favourable market movements
+- If you buy a large chunk of securities, you will not be able to complete the transaction without impacting the prices at which this transaction is done
+- This effect on the market prices due to your own order is called "market impact" and it can contribute to a large part of the total transaction cost when the security is not very liquid
+- Slippage: A delay between the time your program transmits an order to your brokerage and the time it is executed at the exchange, most of the times slippages will incur a loss
+- Transaction costs vary widely for different kinds of security, you can typically estimate it by taking half the average bid-ask spread and then adding the commission if your order size is not much bigger than the average sizes of the best bid and offer
+    
