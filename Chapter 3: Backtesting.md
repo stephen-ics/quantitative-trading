@@ -110,3 +110,24 @@
 - Typically an extreme return, say 4 standard deviations away from the average should be accompanied by a news announcement, or should occur on a day when the market index also experienced extreme returns, if not then the data is suspect
 
 #### Performance Measurement
+- Quantitative traders use a good variety of performance measures, though which set of numbers to use is often a personal preference, but with ease of comparisons across different strategies, the Sharpe ratio and drawdowns are likely to be the two most important
+- Average annualized returns aka compound annual growth rate (CAGR): A measure of the mean annual growth rate of an investment over a specified period of time longer than one year
+- Represents one of the most accurate ways to calculate and determine returns for anything that can rise or fall in value over time
+- CAGR can be numerically represented as `CAGR = (Vf / Vi)^(1/n) - 1`
+    - Vf is the final value of the investment
+    - Vi is the initial value of the investment
+    - n is the number of years
+- An issue with CAGR when it comes to comparison is how the denominator is calculated
+    - For example in a long-short strategy was one or both sides used as a denominator? If the equity or market value changes daily was a moving average used or just the value at the end of each day
+- Using Sharpe ratio and drawdown as the standard performance measures avoids these comparison issues
+- There is one subtlety that often confounds portfolio managers when they calculate Sharpe ratios: should we subtract the risk-free rate from the returns of a dollar-neutral portfolio?
+    - The answer is no, a dollar-neutral portfolio is self-financing, meaning the cash you get from selling short pays for the purchase of the long securities, so the financing cost (due to the spread between credit and debit rates) is small and can be neglected for many backtesting purposes
+    - Meanwhile, the margin balance that must be maintained earns a credit interest close to the risk-free rate
+    - Margin balance: When you engage in short selling, you borrow shorts to sell them, with the hope of buying them back at a lower price, the proceeds from selling these borrowed shares are kept in a margin account
+        - The margin account must maintain a certain minimum balance known as the marin requirement, to cover potential losses from the short positions
+        - The margin balance is the cash/equivalent held in the account
+    - Credit interest: Brokerages often pay interest on the balance in a margin account, this interest rate is close to the risk-free rate
+    - Let's say the strategy return (portfolio return - contribution from the credit interest) is R, and the risk-free rate is Rf, the excess return used in calculating the Sharpe ratio is R + rf - rf = R, so essentially the risk-free rate can be ignored
+- In general, only subtract the risk-free rate from your strategy returns if your strategy incurs financing costs
+- To annualized Sharpe ratio would be sqrt(12) times the monthly Sharpe ratio
+- To generalize the average and standard deviation based on a certain trading period T, you would have to first find out how many such trading periods there are in a year (Nt), then: `Annualized Sharpe Ratio = sqrt(Nt) * Sharpe Ratio Based on T`
