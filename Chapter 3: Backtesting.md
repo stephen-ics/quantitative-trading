@@ -131,3 +131,21 @@
 - In general, only subtract the risk-free rate from your strategy returns if your strategy incurs financing costs
 - To annualized Sharpe ratio would be sqrt(12) times the monthly Sharpe ratio
 - To generalize the average and standard deviation based on a certain trading period T, you would have to first find out how many such trading periods there are in a year (Nt), then: `Annualized Sharpe Ratio = sqrt(Nt) * Sharpe Ratio Based on T`
+
+### Calculating Sharpe Ratio
+#### Using Excel
+- This activity aims to calculate the Sharpe ratio of a long-only strategy for ICE from November 27, 2001 to November 14, 2007, assume the risk-free rate during this period is 4 percent per annum
+1. Go to finance.yahoo.com and search for "IGE", select the "iShares North American Natural Resources ETF"
+2. Click on "Historical Data" from the menu options
+3. Set the date range to November 27, 2001 to November 14, 2007
+4. Choose the frequency (daily) and click "apply" (if it is not applying check if you have an add blocker on)
+5. Click on "Download" to get a CSV file
+6. Open the CSV file in Excel
+7. Select the whole file, go to data -> sort and select the "date" in the columns property, then sort by "oldest to newest"
+8. Select the H3 cell and type "=(G3-G2)/G2", this is the daily return
+9. Double click the dot in the lower right corner to populate the entire column H
+10. For clarity, type "Dailyret" in the header cell H1
+11. In cell I3, type "=H3-0.04/252" which is the excess daily return, assuming a 4% annum risk-free rate and 252 trading days in a year
+12. Double clock the dot in the lower right to populate the entire column and label I1 "Excess Dailyret"
+13. In the last row of the next column (I1506) type "=SQRT(252)*Average(I3:I1505)"
+14. The number displayed should be "0.789317538", the Sharpe ratio of this buy-and-hold strategy
