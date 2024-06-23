@@ -143,9 +143,36 @@
 6. Open the CSV file in Excel
 7. Select the whole file, go to data -> sort and select the "date" in the columns property, then sort by "oldest to newest"
 8. Select the H3 cell and type "=(G3-G2)/G2", this is the daily return
+    - The daily return is calculated as the closing price today subtracted by the closing price yesterday divided by the closing price yesterday it can be represented by: `Daily Return = (Today's Closing Price - Yesterday's Closing Price) / Yesterday's Closing Price)`
 9. Double click the dot in the lower right corner to populate the entire column H
 10. For clarity, type "Dailyret" in the header cell H1
 11. In cell I3, type "=H3-0.04/252" which is the excess daily return, assuming a 4% annum risk-free rate and 252 trading days in a year
 12. Double clock the dot in the lower right to populate the entire column and label I1 "Excess Dailyret"
+    - The excess daily return is the daily return subtracted by the daily risk free rate, it represents the return of the investment above what could be earned from a risk-free asset, it can be represented as `Daily Return - Daily Risk-Free Rate` where `Daily Risk-Free Rate = Risk-Free Rate/Risk free period in which the rate is applied`
 13. In the last row of the next column (I1506) type "=SQRT(252)*Average(I3:I1505)"
-14. The number displayed should be "0.789317538", the Sharpe ratio of this buy-and-hold strategy
+    - If there are 0's that give division by 0 errors, the function can be changed to "=SQRT(252) * AVERAGE(IF(ISNUMBER(I3:I1503), I3:I1503)) / STDEV(IF(ISNUMBER(I3:I1503), I3:I1503))," this will ensure that all parameters are numbers
+14. The number displayed should be the Sharpe ratio of this buy-and-hold strategy
+
+#### Using MATLAB
+- For this section I will explain the MATLAB functions in detail, but as the code is outdates, for deprecated functions I will the deprecated and it's respective non-deprecated function.
+
+#### Pre-Code Knowledge
+- `clc`: Clear's out the terminal, but not the workspace
+- `clea/clearvars`: Clear's out the workspace but not the terminal
+- Deprecated: `xlsread(filename, xlrange)`:
+    - Reads data from an excel spreadsheet from the file with filename with the range of xl range (e.g data = xlsread("IGE", "B1:C2"))
+    - Assignment works in such a way that `data = xlsread(filename, xlrange)`, data will only contain the numerical data values, one can have up to three assignments with the syntax `[numericalData, textData, rawData] = xlsread(filename)`
+- Non-deprecated
+- Indexing: `x = y(row, col)`
+    - This creates a matrix by indexing from another matrix
+        - The indexing starts at 1, not 0
+        - `end`: Represents the last index of the matrix
+        - `:`: Colon operator, used to specify a range
+    - Example: `tradeDays = txt(2:end, 1)`, this contains the trading days (omits the column name which is why it starts at 2, the date column is the first column which is why we take 1)
+- Deprecated: `datenum(dateString, formatIn, pivotYear)`
+    - This is not exactly deprecated, but MATLAB recommends using datetime()
+    - This function converts date and time into a serial date number, dateString is the date to be converted, formatIn is the format of the input date, this must follow the date formatting symbols used by MATLAB(e.g "dd-mm-yyyy", "mm/dd/yyyy"), lastly the pivotYear specified the starting year in an 100 year range, with a pivot year of 1900, the two characters in the range 00-99 are interpreted as 1900-1999
+    - A serial date number in MATLAB is a single number representation of a date by counting the number of days that have passed since a fixed base date, in MATLAB this date is January 0, 0000
+    - The reason to convert to a serial date number is because it is kind of an "intermediate form", we are able to convert to this format, then convert to a different format
+
+
