@@ -154,7 +154,7 @@
 14. The number displayed should be the Sharpe ratio of this buy-and-hold strategy
 
 #### Using MATLAB
-- For this section I will explain the MATLAB functions in detail, but as the code is outdates, for deprecated functions I will the deprecated and it's respective non-deprecated function.
+- For this section I will explain the MATLAB functions in detail, but as the code is outdates, for deprecated functions I will the deprecated and mention it's respective non-deprecated function.
 
 #### Pre-Code Knowledge
 - `clc`: Clear's out the terminal, but not the workspace
@@ -162,7 +162,7 @@
 - Deprecated: `xlsread(filename, xlrange)`:
     - Reads data from an excel spreadsheet from the file with filename with the range of xl range (e.g data = xlsread("IGE", "B1:C2"))
     - Assignment works in such a way that `data = xlsread(filename, xlrange)`, data will only contain the numerical data values, one can have up to three assignments with the syntax `[numericalData, textData, rawData] = xlsread(filename)`
-- Non-deprecated
+    - The non-deprecated versions are `readtable`, `readmatrix`, and `readcell`, these functions also read excel files into their respective data types, though it is good to remember that readtable and readcell support mixed data, readmatrix is purely numerical
 - Indexing: `x = y(row, col)`
     - This creates a matrix by indexing from another matrix
         - The indexing starts at 1, not 0
@@ -176,6 +176,7 @@
     - the pivotYear specifies the starting year in an 100 year range, with a pivot year of 1900, the two characters in the range 00-99 are interpreted as 1900-1999
     - A serial date number in MATLAB is a single number representation of a date by counting the number of days that have passed since a fixed base date, in MATLAB this date is January 0, 0000
     - The reason to convert to a serial date number is because it is kind of an "intermediate form", we are able to convert to this format, then convert to a different format
+    - The non-deprecated function is `datetime` which displays the date in a more human-readable format
 - `datestr(dateNumber, formatOut, pivotYear, options)`
     - dateNumber is the date to be converted, it can be a serial date number or a date vector (a vector of 6 elements representing [year, month, day, hour, minute, second])
     - formatOut is a string specifying the desired output of the string
@@ -196,7 +197,8 @@
 - `std`: Returns the standard deviation of an array
 - `isfinite(array)`: Returns a logical array of the same size where the elements of the input that are finite are true and false when they are not (inf, NaN)
 
-This is what my code looks like (the code in the book does not necessarily work)
+#### My MATLAB Code Variation
+This is what my code looks like (the code in the book does not work)
 ```matlab
     % make sure previously defined variables are erased.
     clear;
@@ -225,3 +227,4 @@ This is what my code looks like (the code in the book does not necessarily work)
     % sharpe ratio!
     sharpeRatio=sqrt(252)*mean(validExcessRet)/std(validExcessRet)
 ```
+
