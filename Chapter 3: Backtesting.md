@@ -227,4 +227,86 @@ This is what my code looks like (the code in the book does not work)
     % sharpe ratio!
     sharpeRatio=sqrt(252)*mean(validExcessRet)/std(validExcessRet)
 ```
+- When testing for strategies you rarely only test for one stock
+- For example, if we wanted to test a long-short strategy, we would find the daily return of the short stock and our net return would be equal to `(long - short) / 2`, then we would calculate excess return of this and calculate Sharpe ratio of this long-short strategy
 
+### Calculating Maximum Drawdown and Maximum Drawdown Duration
+- In this section we calculate the maximum drawdown and the maximum drawdown duration
+- The first step is to calculate the "high watermark" at the close of each day, which is the maximum cumulative return of the strategy up to that time
+- From the high watermark we calculate everything
+- High watermark: The absolute maximum an investment account has reached
+
+#### Excel
+1. In the cell J3, type "=I3"
+2. In the cell J4, type "=(1 + J3)*(1 + I4) - 1", this is the cumulative compounded return of the strategy up to that day, populate the entire column with the cumulative compounded returns of the strategy and erase the last cell of the column, name this column Cumret (cumulative return)
+    - This takes the return for the current day multiplied by the compounded return of the previous day, subtracts 1 to get back into decimal form
+    - If we multiply cumulative return by initial investment we get current capital of the portfolio, therefore calculating calculating cumulative return is accurately represents current price and drawdowns
+3. In the cell K3 type "=J3"
+4. In the cell K4, type "=MAX(K3, J4)", this is the high watermark up to that day, populate the entire column N with the running high watermark of the strategy and erase the last cell of the column, name this column "high watermark"
+5. In the cell L3, type "=(1+K3)/(1+J3) - 1", this is the drawdown at that day's close, populate the entire column L and name the column "drawdowns"
+    - The formula calculates the percentage decline from the high watermark (1+K3) and the current cumulative return (1+J3)
+6. In the cell L1506 type ="MAX(L3:L1505)", this will be the maximum drawdown
+7. In the cell M3, type ="IF(O3=0, 0, M2+1)", this is the duration of the current drawdown, populate this entire column with the drawdown durations and erase the last cell
+    - If the drawdown is zero, the duration is zero, otherwise it increments the duration count from the previous day by 1
+8. In the cell M1506 type ="MAX(P3:1505)", this is the maximum drawdown duration
+- Note: You can also calculate high watermark as highest closing and calculate drawdown with current closing, but you would be sacrificing a bit of accuracy including dividends and reinvestment
+
+### MATLAB
+#### Pre-Code Knowledge
+- `cumprod(array)`:
+    - The cumprod function calculates the cumulative product of elements along a vector or matrix, when applied to an array, cumprod returns an array of the size where each element is the product of the current and all the previous elements of the array (the cumulative product)
+#### My MATLAB Code Variation
+- Again, this is my variation of the code, the original code does not work in my experience
+```matlab
+% make sure previously defined variables are erased.
+clear;
+
+% defines a function to calculate maxDD and maxDDD
+function [maxDD maxDDD]=calculateMaxDD(cumret)
+
+highwatermark=zeros(size(cumret));
+
+drawdown=zeros(size(cumret));
+drawdownduration=zeros(size(cumret));
+for t=2:length(cumret)
+    highwatermark(t)= max(highwatermark(t-1), cumret(t));
+    % drawdown on each day
+    drawdown(t)=(1+highwatermark(t))/(1+cumret(t))-1;
+    if (drawdown(t)==0)
+        % set duration to 0 when drawdown rests
+        drawdownduration(t)=0;
+    else
+        drawdownduration(t)=drawdownduration(t-1)+1;
+    end
+end
+
+maxDD=max(drawdown); % maximum drawdown (takes it from an array of drawdowns)
+
+% maximum drawdown duration
+maxDDD=max(drawdownduration);
+end
+
+% read a spreadsheet named "IGE.xls" into MATLAB.
+nums =xlsread("IGE"); % removes the text headers
+tdates = nums(:, 1);
+tdates = datestr(tdates, 'yyyymmdd');
+tdates = str2double(cellstr(tdates));
+
+cls = nums(:, end);
+
+[tdates, sortIndex] = sort(tdates, 'ascend');
+cls = cls(sortIndex);
+
+dailyret=(cls(2:end)-cls(1:end-1))./cls(1:end-1);
+excessRet=dailyret - 0.04/252;
+
+validExcessRet = excessRet(isfinite(excessRet));
+
+sharpeRatio=sqrt(252)*mean(validExcessRet)/std(validExcessRet)
+
+validDailyRet = dailyret(isfinite(dailyret) & dailyret ~= 0); % ~= means not equal to
+cumret = cumprod(i + validDailyRet) - 1;
+
+[maxDrawdown, maxDrawdownDuration] = calculateMaxDD(cumret);
+
+```
