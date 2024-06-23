@@ -167,12 +167,61 @@
     - This creates a matrix by indexing from another matrix
         - The indexing starts at 1, not 0
         - `end`: Represents the last index of the matrix
-        - `:`: Colon operator, used to specify a range
+        - `:`: Colon operator, used to specify a range, `:` itself without anything selects all rows
     - Example: `tradeDays = txt(2:end, 1)`, this contains the trading days (omits the column name which is why it starts at 2, the date column is the first column which is why we take 1)
 - Deprecated: `datenum(dateString, formatIn, pivotYear)`
     - This is not exactly deprecated, but MATLAB recommends using datetime()
-    - This function converts date and time into a serial date number, dateString is the date to be converted, formatIn is the format of the input date, this must follow the date formatting symbols used by MATLAB(e.g "dd-mm-yyyy", "mm/dd/yyyy"), lastly the pivotYear specified the starting year in an 100 year range, with a pivot year of 1900, the two characters in the range 00-99 are interpreted as 1900-1999
+    - This function converts date and time into a serial date number, dateString is the date to be converted
+    - formatIn is the format of the input date, this must follow the date formatting symbols used by MATLAB(e.g "dd-mm-yyyy", "mm/dd/yyyy"), 
+    - the pivotYear specifies the starting year in an 100 year range, with a pivot year of 1900, the two characters in the range 00-99 are interpreted as 1900-1999
     - A serial date number in MATLAB is a single number representation of a date by counting the number of days that have passed since a fixed base date, in MATLAB this date is January 0, 0000
     - The reason to convert to a serial date number is because it is kind of an "intermediate form", we are able to convert to this format, then convert to a different format
+- `datestr(dateNumber, formatOut, pivotYear, options)`
+    - dateNumber is the date to be converted, it can be a serial date number or a date vector (a vector of 6 elements representing [year, month, day, hour, minute, second])
+    - formatOut is a string specifying the desired output of the string
+    - options are name-value paired arguments that modify the behaviour, for example 'local' is a name that uses a specific time zone
+- `cellstr(array/matrix)`:
+    - Converts an array of strings to a cell array of character vectors
+    - A cell-array in MATLAB is a data type that allows you to store arrays of different types and sizes, each element of a cell array is called a cell, and cells can be accessed with the curly braces {}
+    - To convert the array from strings/characters to numerical values the array must either be a string array, character array, or a cell array of character vectors
+- `str2double(array)`:
+    - The input must be of type character vector, character array, cell array of character vectors, or string array
+    - It outputs a double-precision numeric array, if the input cannot be converted to a number NaN is returned for those numbers
+- `[x, sortIndex] = sort(array, order)`:
+    - Returns a matrix as well as the sort index, the input is the array to be sorted and an order, the orders are "ascend" (default) and "descend"
+    - The sortIndex is an array that represents the indexes of the rearrangements
+    - This allows for other vectors to be ordered the exact same as the sortIndex, e.g closePrices = closePrices(sortIndex), the closePrices will be ordered the same as the original sort
+- `./`: Performs element wise division that divides each element of one array by the corresponding index of another
+- `mean`: Returns the mean of an array
+- `std`: Returns the standard deviation of an array
+- `isfinite(array)`: Returns a logical array of the same size where the elements of the input that are finite are true and false when they are not (inf, NaN)
 
+This is what my code looks like (the code in the book does not necessarily work)
+```matlab
+    % make sure previously defined variables are erased.
+    clear;
 
+    % read a spreadsheet named "IGE.xls" into MATLAB.
+    nums =xlsread("IGE"); % removes the text headers
+
+    % format the dates
+    tdates = nums(:, 1);
+    tdates = datestr(tdates, 'yyyymmdd');
+    tdates = str2double(cellstr(tdates));
+
+    cls = nums(:, end);
+
+    % sort the dates and closing prices
+    [tdates, sortIndex] = sort(tdates, 'ascend');
+    cls = cls(sortIndex);
+
+    % calculating returns
+    dailyret=(cls(2:end)-cls(1:end-1))./cls(1:end-1);
+    excessRet=dailyret - 0.04/252;
+
+    % removing invalid returns
+    validExcessRet = excessRet(isfinite(excessRet));
+
+    % sharpe ratio!
+    sharpeRatio=sqrt(252)*mean(validExcessRet)/std(validExcessRet)
+```
