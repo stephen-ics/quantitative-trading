@@ -315,7 +315,7 @@ cumret = cumprod(i + validDailyRet) - 1;
 - Backtesting is the process of creating the historical trades given the historical information available at the time, two of the most common will be described in this section
 
 #### Look-Ahead Bias
-- This error refers to the situation when you are using information that was available only at the time ahead of the instand the trade was made
+- This error refers to the situation when you are using information that was available only at the time ahead of the instant the trade was made
 - For example, if your trade entry rule reads: "Buy when the stock is within 1 percent of the day's low". you have introduced a look-ahead bias, because you could not possibly have known what the day's low was until the market closed that day
 - You can avoid look-ahead bias by using lagged historical data, "lagging" a series of data means that you calculate all the quantities like moving averages, highs and lows, or even volume, based on data up to the close of the previous trading period only
 - Look ahead bias is especially prominent with MATLAB, and you must remember to run a lag function on certain series used for signal generation
@@ -339,3 +339,18 @@ cumret = cumprod(i + validDailyRet) - 1;
 - The performance of the second part should be reasonbly close to the first part, else the model has built-in data-snooping bias
 - A more rigorous method is to adapt the parameters as the historical data changes, and data-snooping bias should be eliminated with respect to parameters
 - Parameterless Trading Models: Models that constantly optimize parameters in a moving lookback window
+- **Paper trading** is the ultimate out-ouf-sample test
+    - Running the model on actual unseen data is the most reliable way to test it, paper trading not only allows you to perform a honest test, but also aids in discovering look-ahead errors
+
+#### Example of Data Seperation
+- This example will show how to seperate data into a training and test set, we will backtest a pair-trading strategy and optimize its parameters on the training set and look at the effect on the test set
+- We will use GLD (spot price of gold) and GDX (basket of gold-mining stocks) it makes intuitive sense that the prices should move in tandem
+
+### Sensitivity Analysis
+- Once the parameters and features of your model have been optimized on a test set, vary these parameters and make small qualitative changes in the features of the model and see how the performance changes on both the training and test sets
+- If the drop is so drastic that any parameter other than the optimal one is unacceptable, the data likely suffers from data snooping bias
+- One can eliminate conditions one by one until results deteroiate to an unacceptable level, in general you should eliminate as many conditions, constraints, and parameters as long as there is no significant decrease in performance in the test set
+- But you should not add parameters to improve performance on the test set, as they may reintroduce data-snooping bias
+
+### Transaction Cost
+- No backtest performance is realistic without incorporating transaction costs (comimisission, liquidity cost, opportunity cost, market impact)
